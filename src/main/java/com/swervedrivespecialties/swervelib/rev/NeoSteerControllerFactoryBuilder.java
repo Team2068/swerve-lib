@@ -104,7 +104,6 @@ public final class NeoSteerControllerFactoryBuilder {
         private final SparkMaxPIDController controller;
         private final RelativeEncoder motorEncoder;
         private final AbsoluteEncoder absoluteEncoder;
-
         private double referenceAngleRadians = 0;
 
         private double resetIteration = 0;

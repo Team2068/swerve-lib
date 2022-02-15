@@ -44,6 +44,16 @@ public final class Mk3SwerveModuleHelper {
                         .build());
     }
 
+    private static SteerControllerFactory<?, NeoSteerConfiguration<MagEncoderAbsoluteConfiguration>> getNeoSteerFactoryMagEncoder(Mk3ModuleConfiguration configuration) {
+        return new NeoSteerControllerFactoryBuilder()
+                .withVoltageCompensation(configuration.getNominalVoltage())
+                .withPidConstants(1.0, 0.0, 0.1)
+                .withCurrentLimit(configuration.getSteerCurrentLimit())
+                .build(new MagEncoderFactoryBuilder()
+                        .withReadingUpdatePeriod(100)
+                        .build());
+    }
+
     /**
      * Creates a Mk3 swerve module that uses Falcon 500s for driving and steering.
      * Module information is displayed in the specified ShuffleBoard container.
@@ -187,6 +197,29 @@ public final class Mk3SwerveModuleHelper {
                 new NeoSteerConfiguration<>(
                         steerMotorPort,
                         new CanCoderAbsoluteConfiguration(steerEncoderPort, steerOffset)
+                )
+        );
+    }
+
+    public static SwerveModule createNeoMagEncoder(
+            ShuffleboardLayout container,
+            Mk3ModuleConfiguration configuration,
+            GearRatio gearRatio,
+            int driveMotorPort,
+            int steerMotorPort,
+            int steerEncoderPort,
+            double steerOffset
+    ) {
+        return new SwerveModuleFactory<>(
+                gearRatio.getConfiguration(),
+                getNeoDriveFactory(configuration),
+                getNeoSteerFactoryMagEncoder(configuration)
+        ).create(
+                container,
+                driveMotorPort,
+                new NeoSteerConfiguration<>(
+                        steerMotorPort,
+                        new MagEncoderAbsoluteConfiguration(steerEncoderPort, steerOffset)
                 )
         );
     }
